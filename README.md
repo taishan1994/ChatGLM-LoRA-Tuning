@@ -3,7 +3,7 @@
 
 ChatGLM-6B下载地址：[清华大学云盘 (tsinghua.edu.cn)](https://cloud.tsinghua.edu.cn/d/fb9f16d6dc8f482596c2/) 。
 
-训练好的实体识别LoRA权重已经位于checkpoint下。
+训练好的实体识别LoRA权重已经位于checkpoint下。需要注意的是如果要使用已经训练好的LoRA，需要修改train_args.json里面预训练模型的位置。
 
 # 依赖
 
