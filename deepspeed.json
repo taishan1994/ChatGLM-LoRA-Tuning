@@ -1,0 +1,31 @@
+{
+  "train_micro_batch_size_per_gpu": 12,
+  "optimizer": {
+    "type": "Adam",
+    "params": {
+      "lr": 1e-05,
+      "betas": [
+        0.9,
+        0.95
+      ],
+      "eps": 1e-08,
+      "weight_decay": 0.0005
+    }
+  },
+  "fp16": {
+    "enabled": true
+  },
+  "zero_optimization": {
+    "stage": 1,
+    "offload_optimizer": {
+      "device": "cpu",
+      "pin_memory": true
+    },
+    "allgather_partitions": true,
+    "allgather_bucket_size": 200000000.0,
+    "overlap_comm": true,
+    "reduce_scatter": true,
+    "reduce_bucket_size": 200000000.0,
+    "contiguous_gradients": true
+  }
+}
