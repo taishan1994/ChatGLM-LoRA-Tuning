@@ -121,7 +121,7 @@ def main():
         "ignore_pad_token_for_loss": True,
         "train_batch_size": 12,
         "gradient_accumulation_steps": 1,
-        "save_dir": "./checkpoint/msra/train_trainer/adapter_model/",
+        "save_dir": "./checkpoint/msra/train_trainer/",
         "num_train_epochs": 1,
         "local_rank": -1,
         "log_steps": 10,
@@ -133,10 +133,11 @@ def main():
     args = config_parser.parse_main()
 
     pprint(vars(args))
-    if not os.path.exists(args.save_dir):
-        os.makedirs(args.save_dir)
-
-    with open(os.path.join(args.save_dir, "train_args.json"), "w") as fp:
+    tmp_dir = os.path.join(args.save_dir, "adapter_model")
+    if not os.path.exists(tmp_dir):
+        os.makedirs(tmp_dir)
+    
+    with open(os.path.join(tmp_dir, "train_args.json"), "w") as fp:
         json.dump(vars(args), fp, ensure_ascii=False, indent=2)
 
     with open(args.deepspeed_jaon_path, "r") as fp:
