@@ -77,6 +77,8 @@ class PeftSavingCallback(TrainerCallback):
     """ Correctly save PEFT model and not full model """
 
     def _save(self, model, folder):
+        if folder is None:
+            folder = "./checkpoint/msra/train_trainer/"
         peft_model_path = os.path.join(folder, "adapter_model")
         model.save_pretrained(peft_model_path)
 
