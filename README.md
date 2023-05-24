@@ -57,7 +57,7 @@ torch=2.0.0
 --dataset.py：加载数据为相应的格式
 --deepspeed.json：deepspeed配置文件，用于trasnformers的Trainer
 --config_utils.py：用于用字典定义配置，并接收命令行参数
---decode_utisl.py：解码策略，根据自己任务可自行定义
+--decode_utils.py：解码策略，根据自己任务可自行定义
 ```
 
 chatglm-6b下面数据是这样，除权重外已经放在model_hub/chatglm-6b下：
