@@ -1,3 +1,4 @@
+import os
 import torch
 import json
 from pprint import pprint
@@ -18,7 +19,7 @@ tokenizer = AutoTokenizer.from_pretrained(args["model_dir"],  trust_remote_code=
 
 model = AutoModel.from_pretrained(args["model_dir"],  trust_remote_code=True).half().cuda()
 model = model.eval()
-model = PeftModel.from_pretrained(model, args["save_dir"], torch_dtype=torch.float32, trust_remote_code=True)
+model = PeftModel.from_pretrained(model, os.path.join(args["save_dir"], "adapter_model"), torch_dtype=torch.float32, trust_remote_code=True)
 model.half().cuda()
 model.eval()
 
