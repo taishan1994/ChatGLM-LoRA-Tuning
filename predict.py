@@ -47,28 +47,34 @@ test_dataloader = DataLoader(test_data,
                              collate_fn=ner_collate.collate_fn)
 
 with torch.no_grad():
-    preds = []
-    trues = []
+    all_preds = []
+    all_trues = []
     for step, batch in enumerate(test_dataloader):
-        for k, v in batch.items():
+        for k,v in batch.items():
             batch[k] = v.cuda()
-        labels = batch["labels"].detach().cpu().numpy().tolist()
-        input_ids = batch["input_ids"].detach().cpu().numpy().tolist()
+        labels = batch["labels"].detach().cpu().numpy()
+
         output = model(**batch)
         logits = output.logits
-        batch_size = logits.size(0)
-        for i in range(batch_size):
-            tokens = tokenizer.convert_ids_to_tokens(input_ids[i])
-            labels = batch["labels"][i].detach().cpu().numpy().tolist()
-            start = labels.index(bos_token_id)
-            end = labels.index(eos_token_id)
-            pred_tokens = tokenizer.convert_ids_to_tokens(torch.argmax(logits, -1)[i][start + 1:end - 1])
-            true_tokens = tokenizer.convert_ids_to_tokens(labels[start + 2:end])
-            # 这里get_entities可以换成自己任务
-            pred_res = get_entities(pred_tokens)
-            true_res = get_entities(true_tokens)
-            text = tokenizer.decode(input_ids[i][:start])
-            print("文本 >>> ", json.dumps(text, ensure_ascii=False))
-            print("预测 >>> ", pred_res)
-            print("真实 >>> ", true_res)
+        preds = torch.argmax(logits, -1).detach().cpu().numpy()
+        preds = np.where(labels != -100, preds, tokenizer.pad_token_id)
+        for pre, lab in zip(preds.tolist(), labels.tolist()):
+            d1 = tokenizer.convert_ids_to_tokens(lab)
+            d2 = tokenizer.convert_ids_to_tokens(pre)
+            print(d1)
+            print(d2)
+            for dd1, dd2 in zip(d1, d2):
+                print(dd1, dd2)
+            print("="*100)
+        decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=True, decoder_end_token_id=eos_token_id)
+        labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
+        decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True, decoder_end_token_id=eos_token_id)
+        all_preds.extend(decoded_preds)
+        all_trues.extend(decoded_labels)
+
+for text, pred, true in zip(texts, all_preds, all_trues):
+    text = json.dumps(text["instruct"] + text["query"], ensure_ascii=False)
+    print("文本 >>> ", text)
+    print("预测 >>> ", json.dumps(pred, ensure_ascii=False))
+    print("真实 >>> ", json.dumps(true, ensure_ascii=False))
 

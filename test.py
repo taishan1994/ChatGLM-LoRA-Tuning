@@ -39,28 +39,23 @@ bos_token_id = tokenizer.bos_token_id
 eos_token_id = tokenizer.eos_token_id
 
 with torch.no_grad():
-    preds = []
-    trues = []
+    all_preds = []
+    all_trues = []
     for step, batch in enumerate(tqdm(test_dataloader, ncols=100)):
         for k,v in batch.items():
             batch[k] = v.cuda()
-        labels = batch["labels"].detach().cpu().numpy().tolist()
+        labels = batch["labels"].detach().cpu().numpy()
 
         output = model(**batch)
         logits = output.logits
-        batch_size = logits.size(0)
-        for i in range(batch_size):
-            tokens = tokenizer.convert_ids_to_tokens(batch["input_ids"][i])
-            labels = batch["labels"][i].detach().cpu().numpy().tolist()
-            start = labels.index(bos_token_id)
-            end = labels.index(eos_token_id)
-            pred_tokens = tokenizer.convert_ids_to_tokens(torch.argmax(logits, -1)[i][start+1:end-1])
-            true_tokens = tokenizer.convert_ids_to_tokens(labels[start+2:end])
-            # 这里get_entities可以换成自己任务
-            pred_res = get_entities(pred_tokens)
-            true_res = get_entities(true_tokens)
-            preds.append(pred_res)
-            trues.append(true_res)
+        preds = torch.argmax(logits, -1).detach().cpu().numpy()
+        preds = np.where(labels != -100, preds, tokenizer.pad_token_id)
+        preds = preds[:, :-1]
+        decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=True)
+        labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
+        decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
+        all_preds.extend(decoded_preds)
+        all_trues.extend(decoded_labels)
 
-print("预测：", preds[:20])
-print("真实：", trues[:20])
+print("预测：", all_preds[:20])
+print("真实：", all_trues[:20])
