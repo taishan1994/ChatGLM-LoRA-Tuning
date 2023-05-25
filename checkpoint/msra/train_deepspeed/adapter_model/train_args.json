@@ -1,6 +1,6 @@
 {
   "data_name": "msra",
-  "model_dir": "/root/autodl-tmp/chatglm-6b/",
+  "model_dir":  "./model_hub/chatglm-6b/",
   "lora_r": 8,
   "max_source_length": 128,
   "max_target_length": 32,

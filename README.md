@@ -3,7 +3,7 @@
 
 ChatGLM-6B下载地址：[清华大学云盘 (tsinghua.edu.cn)](https://cloud.tsinghua.edu.cn/d/fb9f16d6dc8f482596c2/) 。
 
-训练好的实体识别LoRA权重已经位于checkpoint下。需要注意的是如果要使用已经训练好的LoRA，需要修改train_args.json里面预训练模型的位置。
+训练好的实体识别LoRA权重已经位于checkpoint下。
 
 # 依赖
 
@@ -40,7 +40,7 @@ torch=2.0.0
 ----------------adapter_model.bin
 ----------------train_args.json
 --model_hub：预训练模型
-----chatglm-6b：可以将预训练模型放在这里，然后修改model_dir
+----chatglm-6b：预训练模型位置
 --data：数据
 ----msra：数据集名称
 --------instruct_data：指令数据
