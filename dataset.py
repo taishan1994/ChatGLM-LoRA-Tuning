@@ -71,7 +71,7 @@ class NerCollate:
 
                 context_length = input_ids.index(self.tokenizer.bos_token_id) # sop
                 mask_position = context_length - 1
-                labels = [-100] * context_length + input_ids[mask_position+1:-1] + [-100]
+                labels = [-100] * context_length + input_ids[mask_position+1:]
 
 
                 pad_len = self.max_seq_length - len(input_ids)
