@@ -57,14 +57,8 @@ with torch.no_grad():
         logits = output.logits
         preds = torch.argmax(logits, -1).detach().cpu().numpy()
         preds = np.where(labels != -100, preds, tokenizer.pad_token_id)
-        for pre, lab in zip(preds.tolist(), labels.tolist()):
-            d1 = tokenizer.convert_ids_to_tokens(lab)
-            d2 = tokenizer.convert_ids_to_tokens(pre)
-            print(d1)
-            print(d2)
-            for dd1, dd2 in zip(d1, d2):
-                print(dd1, dd2)
-            print("="*100)
+        preds = preds[:, :-1]
+        labels = labels[:, 1:]
         decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=True, decoder_end_token_id=eos_token_id)
         labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
         decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True, decoder_end_token_id=eos_token_id)
