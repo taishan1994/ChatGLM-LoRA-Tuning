@@ -145,8 +145,6 @@ def main():
     with open(args.deepspeed_jaon_path, "r") as fp:
         deepspeed_json = json.load(fp)
 
-    import sys
-    sys.exit(0)
 
     model = AutoModelForSeq2SeqLM.from_pretrained(args.model_dir,
                                                   trust_remote_code=True,
